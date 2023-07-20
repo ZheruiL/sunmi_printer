@@ -517,4 +517,13 @@ class SunmiPrinter {
     return await _channel
         .invokeMethod("LCD_MULTI_STRING", {"text": texts, "align": aligns});
   }
+
+
+  static Future<void> labelLocate() async {
+    await _channel.invokeMethod("LABEL_LOCATE");
+  }
+
+  static Future<void> labelOutput() async {
+    await _channel.invokeMethod("LABEL_OUTPUT");
+  }
 }

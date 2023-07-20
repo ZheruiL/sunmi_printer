@@ -317,7 +317,14 @@ public class SunmiPrinterPlugin implements FlutterPlugin, MethodCallHandler {
         sunmiPrinterMethod.sendLCDMultiString(lcdText, lcdAlign);
         result.success(true);
         break;
-
+      case "LABEL_LOCATE":
+        sunmiPrinterMethod.labelLocate();
+        result.success(true);
+        break;
+      case "LABEL_OUTPUT":
+        sunmiPrinterMethod.labelOutput();
+        result.success(true);
+        break;
       default:
         result.notImplemented();
         break;
