@@ -10,8 +10,11 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
+
 import java.util.ArrayList;
+
 import woyou.aidlservice.jiuiv5.*;
+
 import java.util.Arrays;
 
 
@@ -33,26 +36,36 @@ public class SunmiPrinterMethod {
         _woyouService = IWoyouService.Stub.asInterface(service);
         String serviceVersion = _woyouService.getServiceVersion();
         Toast
-          .makeText(
-            _context,
-            "Sunmi Printer Service Connected. Version :" + serviceVersion,
-            Toast.LENGTH_LONG
-          )
-          .show();
+                .makeText(
+                        _context,
+                        "Sunmi Printer Service Connected. Version :" + serviceVersion,
+                        Toast.LENGTH_LONG
+                )
+                .show();
+
+
       } catch (RemoteException e) {
         e.printStackTrace();
+      } catch (NullPointerException e) {
+
+        Toast
+                .makeText(
+                        _context,
+                        "Sunmi Printer Service Not Found",
+                        Toast.LENGTH_LONG
+                ).show();
       }
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
       Toast
-        .makeText(
-          _context,
-          "Sunmi Printer Service Disconnected",
-          Toast.LENGTH_LONG
-        )
-        .show();
+              .makeText(
+                      _context,
+                      "Sunmi Printer Service Disconnected",
+                      Toast.LENGTH_LONG
+              )
+              .show();
     }
   };
 
@@ -70,7 +83,10 @@ public class SunmiPrinterMethod {
   public void initPrinter() {
     try {
       _woyouService.printerInit(this._callback());
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+
+    }
   }
 
   public int updatePrinter() {
@@ -79,10 +95,13 @@ public class SunmiPrinterMethod {
       return status;
     } catch (RemoteException e) {
       return 0; // error
+    } catch (NullPointerException e) {
+      return 0;
     }
   }
 
   public void printText(String text) {
+
     this._printingText.add(this._printText(text));
   }
 
@@ -91,6 +110,8 @@ public class SunmiPrinterMethod {
       _woyouService.printText(text, this._callback());
       return true;
     } catch (RemoteException e) {
+      return false;
+    } catch (NullPointerException e) {
       return false;
     }
   }
@@ -101,6 +122,8 @@ public class SunmiPrinterMethod {
       return true;
     } catch (RemoteException e) {
       return false;
+    } catch (NullPointerException e) {
+      return false;
     }
   }
 
@@ -110,6 +133,8 @@ public class SunmiPrinterMethod {
       return true;
     } catch (RemoteException e) {
       return false;
+    } catch (NullPointerException e) {
+      return false;
     }
   }
 
@@ -118,10 +143,10 @@ public class SunmiPrinterMethod {
       bold = false;
     }
 
-    byte[] command = new byte[] { 0x1B, 0x45, 0x1 };
+    byte[] command = new byte[]{0x1B, 0x45, 0x1};
 
     if (bold == false) {
-      command = new byte[] { 0x1B, 0x45, 0x0 };
+      command = new byte[]{0x1B, 0x45, 0x0};
     }
 
     try {
@@ -129,46 +154,32 @@ public class SunmiPrinterMethod {
       return true;
     } catch (RemoteException e) {
       return false;
+    } catch (NullPointerException e) {
+      return false;
     }
   }
 
 
-    public void printTest2 () {
-
-		
-		
-		
-    
-	}
-
-
   public Boolean printColumn(
-    String[] stringColumns,
-    int[] columnWidth,
-    int[] columnAlignment
+          String[] stringColumns,
+          int[] columnWidth,
+          int[] columnAlignment
   ) {
 
-      
-     try {
-    //    _woyouService.printColumnsText(new String[]{"MARCUS","TESTE","JORGE"}, new int[]{8,8,8}, new int[]{1,1,1},this._callback());
-    //         return true;
-    // //   Log.d("SunmiPrinter", "printColumn111");
-    // //   Log.d("SunmiPrinter", Arrays.toString(columnWidth));
-    // //   Log.d("SunmiPrinter", Arrays.toString(columnAlignment));
-    // //   Log.d("SunmiPrinter", Arrays.deepToString(stringColumns));
-    // //   Log.d("SunmiPrinter", "printColumn111");
-    // //   Log.d("SunmiPrinter", "printColumn111");
 
-      _woyouService.printColumnsText(
-        stringColumns,
-        columnWidth,
-        columnAlignment,
-        this._callback()
+    try {
+
+      _woyouService.printColumnsString(
+              stringColumns,
+              columnWidth,
+              columnAlignment,
+              this._callback()
       );
 
-     return true;
+      return true;
     } catch (RemoteException e) {
-      e.printStackTrace();
+      return false;
+    } catch (NullPointerException e) {
       return false;
     }
   }
@@ -179,6 +190,56 @@ public class SunmiPrinterMethod {
       return true;
     } catch (RemoteException e) {
       return false;
+    } catch (NullPointerException e) {
+      return false;
+    }
+  }
+
+
+  public Boolean cutPaper() {
+    try {
+      _woyouService.cutPaper(this._callback());
+      return true;
+    } catch (RemoteException e) {
+      return false;
+    } catch (NullPointerException e) {
+      return false;
+    }
+  }
+
+  public String getPrinterSerialNo() {
+
+    try {
+      final String serial = _woyouService.getPrinterSerialNo();
+      return serial;
+    } catch (RemoteException e) {
+      return ""; // error;
+    } catch (NullPointerException e) {
+      return "NOT FOUND";
+    }
+  }
+
+  public String getPrinterVersion() {
+    try {
+
+      final String version = _woyouService.getPrinterVersion();
+      return version;
+    } catch (RemoteException e) {
+      return "";// error;
+    } catch (NullPointerException e) {
+      return "NOT FOUND";
+    }
+  }
+
+  public int getPrinterPaper() {
+    try {
+
+      final int paper = _woyouService.getPrinterPaper();
+      return paper;
+    } catch (RemoteException e) {
+      return 1; // error;
+    } catch (NullPointerException e) {
+      return 1;
     }
   }
 
@@ -188,96 +249,122 @@ public class SunmiPrinterMethod {
       return mode;
     } catch (RemoteException e) {
       return 3; // error;
+    } catch (NullPointerException e) {
+      return 3;
     }
   }
 
   public void labelLocate() {
     try {
       _woyouService.labelLocate();
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   public void labelOutput() {
     try {
       _woyouService.labelOutput();
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   public void lineWrap(int lines) {
     try {
       _woyouService.lineWrap(lines, this._callback());
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   public void sendRaw(byte[] bytes) {
     try {
       this._woyouService.sendRAWData(bytes, this._callback());
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   public void enterPrinterBuffer(Boolean clear) {
     try {
       this._woyouService.enterPrinterBuffer(clear);
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   public void commitPrinterBuffer() {
     try {
       this._woyouService.commitPrinterBuffer();
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   public void exitPrinterBuffer(Boolean clear) {
     try {
       this._woyouService.exitPrinterBuffer(clear);
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   public void setAlignment(int alignment) {
     try {
       _woyouService.setAlignment(alignment, this._callback());
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   public void printQRCode(String data, int modulesize, int errorlevel) {
     try {
       _woyouService.printQRCode(data, modulesize, errorlevel, this._callback());
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   public void printBarCode(
-    String data,
-    int barcodeType,
-    int textPosition,
-    int width,
-    int height
+          String data,
+          int barcodeType,
+          int textPosition,
+          int width,
+          int height
   ) {
     try {
       _woyouService.printBarCode(
-        data,
-        barcodeType,
-        height,
-        width,
-        textPosition,
-        this._callback()
+              data,
+              barcodeType,
+              height,
+              width,
+              textPosition,
+              this._callback()
       );
-    } catch (RemoteException e) {}
+    } catch (RemoteException e) {
+    } catch (NullPointerException e) {
+    }
   }
 
   private ICallback _callback() {
     return new ICallback() {
       @Override
-      public void onRunResult(boolean isSuccess) throws RemoteException {}
+      public void onRunResult(boolean isSuccess) throws RemoteException {
+      }
 
       @Override
-      public void onReturnString(String result) throws RemoteException {}
+      public void onReturnString(String result) throws RemoteException {
+      }
 
       @Override
       public void onRaiseException(int code, String msg)
-        throws RemoteException {}
+              throws RemoteException {
+      }
 
       @Override
-      public void onPrintResult(int code, String msg) throws RemoteException {}
+      public void onPrintResult(int code, String msg) throws RemoteException {
+      }
 
       @Override
       public IBinder asBinder() {
