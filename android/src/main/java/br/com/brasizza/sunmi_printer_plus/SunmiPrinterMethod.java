@@ -196,16 +196,16 @@ public class SunmiPrinterMethod {
   }
 
 
-  public Boolean cutPaper() {
-    try {
-      _woyouService.cutPaper(this._callback());
-      return true;
-    } catch (RemoteException e) {
-      return false;
-    } catch (NullPointerException e) {
-      return false;
-    }
-  }
+//  public Boolean cutPaper() {
+//    try {
+//      _woyouService.cutPaper(this._callback());
+//      return true;
+//    } catch (RemoteException e) {
+//      return false;
+//    } catch (NullPointerException e) {
+//      return false;
+//    }
+//  }
 
   public String getPrinterSerialNo() {
 
